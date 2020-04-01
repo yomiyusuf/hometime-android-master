@@ -1,12 +1,14 @@
 package au.com.realestate.hometime.models
 
-import com.squareup.moshi.Json
+import com.google.gson.annotations.SerializedName
 
-class Tram {
-    @Json(name = "Destination")
-    var destination: String? = null
-    @Json(name = "PredictedArrivalDateTime")
-    var predictedArrival: String? = null
-    @Json(name = "RouteNo")
+data class Tram (
+    @SerializedName("Destination")
+    var destination: String,
+
+    @SerializedName("PredictedArrivalDateTime")
+    var predictedArrival: String,
+
+    @SerializedName("RouteNo")
     var routeNo: String? = null
-}
+)

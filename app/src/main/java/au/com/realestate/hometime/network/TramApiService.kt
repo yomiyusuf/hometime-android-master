@@ -1,7 +1,6 @@
 package au.com.realestate.hometime.network
 
-import au.com.realestate.hometime.models.ApiToken
-import au.com.realestate.hometime.models.PredictedTime
+import au.com.realestate.hometime.models.*
 import au.com.realestate.hometime.util.Constants.BASE_URL
 import io.reactivex.Single
 import retrofit2.Retrofit
@@ -17,11 +16,11 @@ class TramApiService {
             .build()
             .create(TramApi::class.java)
 
-    fun getApiToken(): Single<ApiToken> {
+    fun getApiToken(): Single<ApiResponse<Token>> {
         return api.getApiToken()
     }
 
-    fun getPredictedTime(stopId: String, token: String): Single<PredictedTime> {
+    fun getPredictedTime(stopId: String, token: String): Single<ApiResponse<Tram>> {
         return api.getPredictedTime(stopId, token)
     }
 }

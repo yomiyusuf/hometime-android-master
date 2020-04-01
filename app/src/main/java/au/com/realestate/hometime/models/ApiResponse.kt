@@ -1,10 +1,8 @@
 package au.com.realestate.hometime.models
 
-class ApiResponse<T> {
-    var errorMessage: String? = null
-    var hasError: Boolean? = null
-    var hasResponse: Boolean? = null
-    var responseObject: List<T>? = null
-}
-
-
+data class ApiResponse<T> (
+    var errorMessage: String,
+    var hasError: Boolean,
+    var hasResponse: Boolean,
+    var responseObject: List<T>
+)
