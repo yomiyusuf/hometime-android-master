@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import androidx.activity.viewModels
+import androidx.lifecycle.ViewModelProviders
 import au.com.realestate.hometime.models.Tram
+import au.com.realestate.hometime.viewmodel.TrackerViewModel
 
 import java.util.ArrayList
 import java.util.Date
@@ -24,6 +27,10 @@ class MainActivity : AppCompatActivity() {
 
         northListView = findViewById<View>(R.id.northListView) as ListView
         southListView = findViewById<View>(R.id.southListView) as ListView
+
+        val viewmodel:  TrackerViewModel by viewModels()
+        viewmodel.refresh(listOf("4055", "4155"))
+
     }
 
     fun refreshClick(view: View) {

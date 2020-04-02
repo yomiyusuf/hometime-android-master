@@ -16,11 +16,11 @@ class TramApiService {
             .build()
             .create(TramApi::class.java)
 
-    fun getApiToken(): Single<ApiResponse<Token>> {
+    fun getApiToken(): Single<ApiResponse<ApiToken>> {
         return api.getApiToken()
     }
 
-    fun getPredictedTime(stopId: String, token: String): Single<ApiResponse<Tram>> {
+    fun getPredictedTimes(stopId: String, token: String): Single<ApiResponse<Tram>> {
         return api.getPredictedTime(stopId, token)
     }
 }

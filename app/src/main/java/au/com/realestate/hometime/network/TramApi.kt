@@ -11,11 +11,11 @@ import retrofit2.http.Query
 interface TramApi {
 
     @GET(GET_TOKEN)
-    fun getApiToken(): Single<ApiResponse<Token>>
+    fun getApiToken(): Single<ApiResponse<ApiToken>>
 
     @GET(GET_PREDICTED_TIME)
     fun getPredictedTime(
             @Path("stopId")stop_id: String,
-            @Query("token")token: String)
+            @Query("tkn")token: String)
             : Single<ApiResponse<Tram>>
 }
