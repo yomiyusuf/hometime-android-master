@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import au.com.realestate.hometime.R
 import au.com.realestate.hometime.viewmodel.TrackerViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.Date
 
 class MainActivity : AppCompatActivity() {
 

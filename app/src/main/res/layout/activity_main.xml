@@ -41,8 +41,8 @@
         android:layout_width="0dp"
         android:layout_height="240dp"
         app:layout_constraintBottom_toTopOf="@id/btn_refresh"
-        app:layout_constraintStart_toStartOf="@id/btn_refresh"
-        app:layout_constraintEnd_toEndOf="@id/btn_refresh"
+        app:layout_constraintStart_toStartOf="@id/bg_content"
+        app:layout_constraintEnd_toEndOf="@id/bg_content"
         android:layout_marginBottom="@dimen/base_dimen_4"
         tools:listitem="@layout/item_tram"
         />

@@ -24,6 +24,10 @@ class TramView: ConstraintLayout {
                 .inflate(R.layout.item_tram, this, true)
     }
 
+    /**
+     * Method to initialize the views of the custom view
+     * @param  Tram object
+     */
     fun setView(tram: Tram) {
         txt_item_destination.text = tram.destination
         txt_item_route.text = tram.routeNo
