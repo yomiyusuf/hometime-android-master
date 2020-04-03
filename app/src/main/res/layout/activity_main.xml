@@ -1,66 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context="au.com.realestate.hometime.MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimary"
+    tools:context="au.com.realestate.hometime.view.MainActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <View
+        android:id="@+id/bg_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/bg_content"
+        android:layout_marginStart="@dimen/base_dimen_4"
+        android:layout_marginEnd="@dimen/base_dimen_4"
+        android:layout_marginBottom="@dimen/base_dimen_4"
+        app:layout_constraintTop_toTopOf="@id/rv_trams"
+        />
+
+    <Button
+        android:id="@+id/btn_refresh"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/buttonPanel">
+        android:text="Refresh"
+        style="@style/ButtonPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/base_dimen_8"
+        app:layout_constraintStart_toStartOf="@id/bg_content"
+        app:layout_constraintEnd_toEndOf="@id/bg_content"
+        android:layout_marginStart="@dimen/base_dimen_4"
+        android:layout_marginEnd="@dimen/base_dimen_4"
+        />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="North"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_trams"
+        android:layout_width="0dp"
+        android:layout_height="240dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_refresh"
+        app:layout_constraintStart_toStartOf="@id/btn_refresh"
+        app:layout_constraintEnd_toEndOf="@id/btn_refresh"
+        android:layout_marginBottom="@dimen/base_dimen_4"
+        tools:listitem="@layout/item_tram"
+        />
 
-        <ListView
-            android:id="@+id/northListView"
-            style="@style/Widget.AppCompat.ListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="South"/>
-
-        <ListView
-            android:id="@+id/southListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/buttonPanel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true">
-        <Button
-            android:id="@+id/clearButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear"
-            android:layout_weight="1"
-            android:onClick="clearClick"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"/>
-
-        <Button
-            android:id="@+id/refreshButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Refresh"
-            android:layout_weight="1"
-            android:onClick="refreshClick"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"/>
-    </LinearLayout>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
