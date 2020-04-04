@@ -35,7 +35,7 @@ android {
     }
 }
 
-def lifeCycleExtensionVersion = '2.2.0'
+def lifeCycleExtensionVersion = '1.1.1'
 def retrofitVersion = '2.3.0'
 def rxJavaVersion = '2.1.1'
 def daggerVersion = '2.14.1'
@@ -54,7 +54,7 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.2.4'
     implementation "androidx.core:core-ktx:1.2.0"
 
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifeCycleExtensionVersion"
+    implementation "android.arch.lifecycle:extensions:$lifeCycleExtensionVersion"
 
     //Networking dependencies
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"

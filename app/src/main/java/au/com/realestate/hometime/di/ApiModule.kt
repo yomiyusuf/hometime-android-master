@@ -10,7 +10,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
-class ApiModule {
+open class ApiModule {
 
     @Provides
     fun provideTramApi() : TramApi {
@@ -23,7 +23,7 @@ class ApiModule {
     }
 
     @Provides
-    fun provideTramApiService(): TramApiService {
+    open fun provideTramApiService(): TramApiService {
         return TramApiService()
     }
 }

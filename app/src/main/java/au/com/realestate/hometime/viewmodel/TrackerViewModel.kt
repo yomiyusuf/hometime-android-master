@@ -17,6 +17,10 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class TrackerViewModel(application: Application) : AndroidViewModel(application) {
+
+    constructor(application: Application, test: Boolean = true): this(application) {
+        injected = test
+    }
     val trams by lazy { MutableLiveData<List<Tram>>() }
     val loadingError by lazy { MutableLiveData<Boolean>() }
     val loading by lazy { MutableLiveData<Boolean>() }
@@ -24,6 +28,7 @@ class TrackerViewModel(application: Application) : AndroidViewModel(application)
     private val disposable = CompositeDisposable()
     private lateinit var _stops: List<String>
     private var invalidApiToken = false
+    private var injected = false //Flag to prevent real injection when in test case
 
     @Inject
     lateinit var prefs: SharedPreferencesHelper
@@ -31,14 +36,17 @@ class TrackerViewModel(application: Application) : AndroidViewModel(application)
     @Inject
     lateinit var apiService: TramApiService
 
-    init {
-        DaggerViewModelComponent.builder()
-                .appModule(AppModule(application))
-                .build()
-                .inject(this)
+    fun inject() {
+        if (!injected) {
+            DaggerViewModelComponent.builder()
+                    .appModule(AppModule(getApplication()))
+                    .build()
+                    .inject(this)
+        }
     }
 
     fun refresh(stops: List<String>) {
+        inject()
         isLoading()
         invalidApiToken = false
         _stops = stops
@@ -48,6 +56,13 @@ class TrackerViewModel(application: Application) : AndroidViewModel(application)
         } else {
             getPredictedTimes(token = token)
         }
+    }
+
+    fun hardRefresh(stops: List<String>) {
+        inject()
+        _stops = stops
+        isLoading()
+        getToken()
     }
 
     private fun getToken() {
