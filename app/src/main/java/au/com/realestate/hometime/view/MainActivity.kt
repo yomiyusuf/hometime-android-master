@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         registerObservers()
+        btn_refresh.setOnClickListener { refresh() }
     }
 
     private fun registerObservers() {
@@ -41,14 +42,14 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         //Refresh list each time the activity resumes
-        viewModel.refresh(listOf("4055", "4155"))
+        refresh()
     }
 
     private fun showError() {
 
     }
 
-    fun refreshClick(view: View) {
-
+    private fun refresh() {
+        viewModel.refresh(listOf("4055", "4155"))
     }
 }

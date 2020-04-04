@@ -64,8 +64,7 @@
         tools:text="16"
         style="@style/BoldText"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/txt_item_min"
-        app:layout_constraintStart_toStartOf="@id/txt_item_min"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/txt_item_min"
         app:layout_constraintVertical_chainStyle="packed"
         />
@@ -74,7 +73,7 @@
         android:id="@+id/txt_item_min"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="min"
+        android:text="@string/min"
         style="@style/SmallText"
         app:layout_constraintTop_toBottomOf="@id/txt_item_countdown"
         app:layout_constraintBottom_toBottomOf="parent"
