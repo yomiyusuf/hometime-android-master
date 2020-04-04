@@ -1,20 +1,18 @@
 package au.com.realestate.hometime.network
 
+import au.com.realestate.hometime.di.DaggerApiComponent
 import au.com.realestate.hometime.models.*
-import au.com.realestate.hometime.util.Constants.BASE_URL
 import io.reactivex.Single
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
 class TramApiService {
 
-    private  val api = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .build()
-            .create(TramApi::class.java)
+    @Inject
+    lateinit var api: TramApi
+
+    init {
+        DaggerApiComponent.create().inject(this)
+    }
 
     fun getApiToken(): Single<ApiResponse<ApiToken>> {
         return api.getApiToken()

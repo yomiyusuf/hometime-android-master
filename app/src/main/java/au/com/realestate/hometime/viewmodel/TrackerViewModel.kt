@@ -3,6 +3,8 @@ package au.com.realestate.hometime.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import au.com.realestate.hometime.di.AppModule
+import au.com.realestate.hometime.di.DaggerViewModelComponent
 import au.com.realestate.hometime.models.ApiResponse
 import au.com.realestate.hometime.models.ApiToken
 import au.com.realestate.hometime.models.Tram
@@ -12,18 +14,29 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 class TrackerViewModel(application: Application) : AndroidViewModel(application) {
     val trams by lazy { MutableLiveData<List<Tram>>() }
     val loadingError by lazy { MutableLiveData<Boolean>() }
     val loading by lazy { MutableLiveData<Boolean>() }
 
-    private val prefs = SharedPreferencesHelper(application)
     private val disposable = CompositeDisposable()
-    private val apiService = TramApiService()
-
     private lateinit var _stops: List<String>
     private var invalidApiToken = false
+
+    @Inject
+    lateinit var prefs: SharedPreferencesHelper
+
+    @Inject
+    lateinit var apiService: TramApiService
+
+    init {
+        DaggerViewModelComponent.builder()
+                .appModule(AppModule(application))
+                .build()
+                .inject(this)
+    }
 
     fun refresh(stops: List<String>) {
         isLoading()
