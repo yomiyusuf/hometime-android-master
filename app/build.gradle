@@ -53,6 +53,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.fragment:fragment-ktx:1.2.4'
     implementation "androidx.core:core-ktx:1.2.0"
+    implementation 'com.github.razir.progressbutton:progressbutton:2.0.1'
 
     implementation "android.arch.lifecycle:extensions:$lifeCycleExtensionVersion"
 
@@ -78,4 +79,3 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
-

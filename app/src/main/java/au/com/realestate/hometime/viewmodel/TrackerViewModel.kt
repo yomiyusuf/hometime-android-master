@@ -10,10 +10,15 @@ import au.com.realestate.hometime.models.ApiToken
 import au.com.realestate.hometime.models.Tram
 import au.com.realestate.hometime.network.TramApiService
 import au.com.realestate.hometime.util.SharedPreferencesHelper
+import au.com.realestate.hometime.view.model.ErrorStatus
+import au.com.realestate.hometime.view.model.ErrorType
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import retrofit2.HttpException
+import java.io.IOException
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 class TrackerViewModel(application: Application) : AndroidViewModel(application) {
@@ -22,7 +27,7 @@ class TrackerViewModel(application: Application) : AndroidViewModel(application)
         injected = test
     }
     val trams by lazy { MutableLiveData<List<Tram>>() }
-    val loadingError by lazy { MutableLiveData<Boolean>() }
+    val loadingError by lazy { MutableLiveData<ErrorStatus>() }
     val loading by lazy { MutableLiveData<Boolean>() }
 
     private val disposable = CompositeDisposable()
@@ -73,7 +78,7 @@ class TrackerViewModel(application: Application) : AndroidViewModel(application)
                         .subscribeWith(object : DisposableSingleObserver<ApiResponse<ApiToken>>() {
                             override fun onSuccess(response: ApiResponse<ApiToken>) {
                                 if (response.hasError) {
-                                    loadingError.value = true
+                                    loadingError.value = ErrorStatus(true, ErrorType.ServerError)
                                     loadingFinished()
                                 } else {
                                     val tkn = response.responseObject[0].toString()
@@ -84,7 +89,7 @@ class TrackerViewModel(application: Application) : AndroidViewModel(application)
 
                             override fun onError(e: Throwable) {
                                 loadingFinished()
-                                loadingError.value = true
+                                handleError(e)
                             }
                         })
         )
@@ -105,11 +110,12 @@ class TrackerViewModel(application: Application) : AndroidViewModel(application)
                             override fun onSuccess(response: ApiResponse<Tram>) {
 
                                 if (response.hasError) {
-                                    loadingError.value = true
+                                    handleError(ErrorType.ServerError)
                                     loadingFinished()
                                 } else {
                                     val tramList = response.responseObject
                                     loadingFinished()
+                                    handleError(null)
                                     trams.value = tramList
                                 }
                             }
@@ -122,7 +128,7 @@ class TrackerViewModel(application: Application) : AndroidViewModel(application)
                                     getToken()
                                 } else {
                                     e.printStackTrace()
-                                    loadingError.value = true
+                                    handleError(e)
                                     loadingFinished()
                                 }
                             }
@@ -141,5 +147,24 @@ class TrackerViewModel(application: Application) : AndroidViewModel(application)
 
     private fun isLoading() {
         loading.value = true
+    }
+
+    /**
+     * Method to check type of error
+     * Handling just network error or others for now
+     */
+    private fun handleError(e: Throwable) {
+        if (e is IOException || e is SocketTimeoutException) {
+            handleError(ErrorType.NetworkError)
+        } else {
+            handleError(ErrorType.ServerError)
+        }
+    }
+
+    private fun handleError(type: ErrorType?){
+        val errorStatus = if (type == null){ ErrorStatus(false)} else {
+            ErrorStatus(true, type)
+        }
+        loadingError.value = errorStatus
     }
 }

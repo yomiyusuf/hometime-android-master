@@ -40,6 +40,7 @@ class TramView: ConstraintLayout {
         val scheduledTime = DateUtils.formatDateTime(context, tram.timeSpan(), DateUtils.FORMAT_SHOW_TIME).toString()
         txt_item_scheduled.text = scheduledTime
         if (tram.timeFromNow() < 60 ) {
+            txt_item_min.visibility = View.VISIBLE
             txt_item_countdown.text = tram.timeFromNow().toString()
         } else {
             txt_item_countdown.text = scheduledTime
