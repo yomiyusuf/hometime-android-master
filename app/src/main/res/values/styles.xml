@@ -8,16 +8,20 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="BoldText1">
+    <style name="blackText">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="BoldText1" parent="blackText">
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="SmallText">
+    <style name="SmallText" parent="blackText">
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="BoldText">
+    <style name="BoldText" parent="blackText">
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -34,6 +38,7 @@
         <item name="android:background">@drawable/bg_button</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
 </resources>

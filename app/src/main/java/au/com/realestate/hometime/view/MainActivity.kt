@@ -2,13 +2,12 @@ package au.com.realestate.hometime.view
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import au.com.realestate.hometime.R
 import au.com.realestate.hometime.util.InternetUtil
+import au.com.realestate.hometime.view.adapter.TramsPagerAdapter
 import au.com.realestate.hometime.view.model.ErrorType
 import au.com.realestate.hometime.viewmodel.TrackerViewModel
 import com.github.razir.progressbutton.bindProgressButton
@@ -21,9 +20,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private val viewModel:  TrackerViewModel by viewModels()
-    private val listAdapter = TramListAdapter(arrayListOf())
 
-    private val stops = listOf("4055", "4155")
+    private val stops = listOf(Pair("North", "4055"), Pair("South", "4155"))
 
     private var snackBar: Snackbar? = null
 
@@ -33,20 +31,24 @@ class MainActivity : AppCompatActivity() {
         InternetUtil.init(application)//move this to custom application class in larger app
         bindProgressButton(btn_refresh)
 
-        rv_trams.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = listAdapter
-        }
-
+        setupViewPager()
         registerObservers()
-        btn_refresh.setOnClickListener { refresh() }
+        btn_refresh.setOnClickListener { refresh(true) }
     }
 
+    private fun setupViewPager() {
+        val pagerAdapter = TramsPagerAdapter(supportFragmentManager)
+        stops.forEach {
+            pagerAdapter.addFragment(TramsFragment.newInstance(it.second), it.first)
+        }
+        viewpager.adapter = pagerAdapter
+        view_pager_tab.setViewPager(viewpager)
+    }
+
+    /**
+     * Register observers for global states: Loading, Error and network status
+     */
     private fun registerObservers() {
-        viewModel.trams.observe(this, Observer { trams ->
-            Log.e("MainActivity", trams.toString())
-            listAdapter.updateData(trams)
-        })
 
         viewModel.loading.observe(this, Observer { loading ->
             if (loading) {
@@ -74,10 +76,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        //Refresh list each time the activity resumes
+        //Refresh list each time the activity resumes to avoid stale data
         refresh()
     }
 
+    /**
+     * Resolve the correct error message
+     * @param type See ErrorType
+     */
     private fun showError(type: ErrorType) {
         val msg = when (type){
             ErrorType.NetworkError -> getString(R.string.network_error)
@@ -91,7 +97,8 @@ class MainActivity : AppCompatActivity() {
         snackBar?.dismiss()
     }
 
-    private fun refresh() {
-        viewModel.refresh(stops)
+    private fun refresh(isHardRefresh: Boolean = false) {
+        val stopIds = stops.map { it.second }
+       if (isHardRefresh) viewModel.hardRefresh(stopIds) else viewModel.refresh(stopIds)
     }
 }

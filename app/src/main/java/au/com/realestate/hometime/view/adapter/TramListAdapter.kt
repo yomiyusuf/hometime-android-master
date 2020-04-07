@@ -1,9 +1,10 @@
-package au.com.realestate.hometime.view
+package au.com.realestate.hometime.view.adapter
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import au.com.realestate.hometime.models.Tram
+import au.com.realestate.hometime.view.TramView
 
 
 class TramListAdapter(private val tramList: ArrayList<Tram>):

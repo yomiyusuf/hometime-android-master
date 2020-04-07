@@ -1,22 +1,29 @@
 package au.com.realestate.hometime.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import au.com.realestate.hometime.di.AppModule
 import au.com.realestate.hometime.di.DaggerViewModelComponent
 import au.com.realestate.hometime.models.ApiResponse
 import au.com.realestate.hometime.models.ApiToken
 import au.com.realestate.hometime.models.Tram
 import au.com.realestate.hometime.network.TramApiService
+import au.com.realestate.hometime.util.Constants
 import au.com.realestate.hometime.util.SharedPreferencesHelper
 import au.com.realestate.hometime.view.model.ErrorStatus
 import au.com.realestate.hometime.view.model.ErrorType
+import au.com.realestate.hometime.view.model.TramsListModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
-import retrofit2.HttpException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
@@ -26,7 +33,7 @@ class TrackerViewModel(application: Application) : AndroidViewModel(application)
     constructor(application: Application, test: Boolean = true): this(application) {
         injected = test
     }
-    val trams by lazy { MutableLiveData<List<Tram>>() }
+    val trams by lazy { MutableLiveData<MutableList<TramsListModel>>() }
     val loadingError by lazy { MutableLiveData<ErrorStatus>() }
     val loading by lazy { MutableLiveData<Boolean>() }
 
@@ -116,7 +123,7 @@ class TrackerViewModel(application: Application) : AndroidViewModel(application)
                                     val tramList = response.responseObject
                                     loadingFinished()
                                     handleError(null)
-                                    trams.value = tramList
+                                    handleData(stopId, tramList)
                                 }
                             }
 
@@ -136,9 +143,38 @@ class TrackerViewModel(application: Application) : AndroidViewModel(application)
         )
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        disposable.clear()
+    /**
+     * Update the value of trams LiveData
+     * @param stopId the calling stopId
+     * @param tramList the list of Tram object that belongs to the stopId
+     */
+    private val viewList = mutableListOf<TramsListModel>()
+    @Synchronized
+    private fun handleData (stopId: String, tramList: List<Tram>) {
+        if (viewList.size == _stops.size) viewList.clear()
+        viewList.add(TramsListModel(stopId, tramList))
+        if (viewList.size == _stops.size) {
+            trams.value = viewList
+            //handleAutoRefresh(viewList, Constants.COUNTDOWN_THRESHOLD)
+        }
+    }
+
+    /**
+     * If any of the trams is arriving in less than the threshold set in {@link Constants.COUNTDOWN_THRESHOLD}
+     * then refresh data every.
+     * @param viewList List of TramsListModel
+     * @param refreshRate rate of refresh in milliseconds
+     */
+    private fun handleAutoRefresh(viewList: MutableList<TramsListModel>, refreshRate: Long) {
+        if (viewList.any { it.belowCountdownThreshold() }) {
+            viewModelScope.cancel()
+            viewModelScope.launch {
+                delay(refreshRate)
+                refresh(_stops)
+            }
+        } else {
+            viewModelScope.cancel()
+        }
     }
 
     private fun loadingFinished() {
@@ -166,5 +202,13 @@ class TrackerViewModel(application: Application) : AndroidViewModel(application)
             ErrorStatus(true, type)
         }
         loadingError.value = errorStatus
+    }
+
+    /**
+     * Dispose resources when there are no observers
+     */
+    override fun onCleared() {
+        super.onCleared()
+        disposable.clear()
     }
 }
